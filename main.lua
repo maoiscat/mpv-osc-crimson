@@ -187,6 +187,7 @@ ne.setMargin = function(self, mr)
 		mp.commandv('set', 'video-margin-ratio-top', mr.t)
 		mp.commandv('set', 'video-margin-ratio-right', mr.r)
 		mp.commandv('set', 'video-margin-ratio-bottom', mr.b)
+		mp.set_property_native("user-data/osc/margins", mr)
 	end
 ne.responder['resize'] = function(self)
 		if not player.fullscreen then
