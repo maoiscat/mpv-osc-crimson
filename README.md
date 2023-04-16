@@ -1,6 +1,6 @@
 # mpv-osc-crimson
 
-This is am mpv script as the osc replacement.
+This is an mpv script as the osc replacement.
 
 This work is done with my [oscf](https://github.com/maoiscat/mpv-osc-framework) tool.
 
