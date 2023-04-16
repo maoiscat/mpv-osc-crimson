@@ -34,7 +34,7 @@ Bottom line:
 7. Playlist: MBL - next file, MBR - previous file
 8. Info
 9. Minimize
-10. Fullscree
+10. Fullscreen
 11. Exit
 
 # Options
@@ -43,13 +43,13 @@ There a a few user options, which can be found in the ''opts'' section of the ma
 
 ```
 opts = {
-  scale = 1,          -- osc render scale
-	fixedHeight = false,-- true to allow osc scale with window
-	hideTimeout = 1,    -- seconds untile osc hides, negative means never
-	fadeDuration = 0.5, -- seconds during fade out, negative means never
-	border = 1,         -- border width
-	size = 26,          -- button size
+	scale = 1,		-- osc render scale
+	fixedHeight = false,	-- true to allow osc scale with window
+	hideTimeout = 1,	-- seconds untile osc hides, negative means never
+	fadeDuration = 0.5,	-- seconds during fade out, negative means never
+	border = 1,		-- border width
+	size = 26,		-- button size
 	remainingTime = false,	-- true to display remaining time instead of duration in the seekbar
-	maxVolume = 100,		-- maximum volume allowed by the volume slider
+	maxVolume = 100,	-- maximum volume allowed by the volume slider
 	}
 ```
