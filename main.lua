@@ -187,8 +187,7 @@ ne.setMargin = function(self, mr)
 		mp.commandv('set', 'video-margin-ratio-top', mr.t)
 		mp.commandv('set', 'video-margin-ratio-right', mr.r)
 		mp.commandv('set', 'video-margin-ratio-bottom', mr.b)
-		utils.shared_script_property_set("osc-margins", string.format("%f,%f,%f,%f",
-			mr.l*55, mr.r, mr.t, mr.b))
+		utils.shared_script_property_set("osc-margins", string.format("%f,%f,%f,%f", mr.l, mr.r, mr.t, mr.b))
 	end
 ne.responder['resize'] = function(self)
 		if not player.fullscreen then
@@ -856,10 +855,10 @@ ne.responder['video-changed'] = function(self)
 			local audio = player.tracks.audio[player.audioTrack]
 			local infoV, infoA, sep = '', '', ''
 			if video then
-				infoV = string.format('%s %dx%d %.2ffps', string.upper(video.codec), video['demux-w'], video['demux-h'], video['demux-fps'])
+				infoV = string.format('%s %dx%d %.2ffps', string.upper(video.codec), video['demux-w'], video['demux-h'], video['demux-fps'] or 0)
 			end
 			if audio then
-				infoA = string.format('%s %dch', string.upper(audio.codec), audio['demux-channel-count'])
+				infoA = string.format('%s %dch', string.upper(audio.codec), audio['demux-channel-count'] or 0)
 			end
 			if video and audio then
 				sep = ' | '
