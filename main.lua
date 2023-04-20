@@ -10,14 +10,14 @@ mp.commandv('set', 'osc', 'no')
 
 -- user options
 opts = {
-	scale = 1,              -- osc render scale
+	scale = 1.8,              -- osc render scale
 	fixedHeight = false,	-- true to allow osc scale with window
 	hideTimeout = 1,		-- seconds untile osc hides, negative means never
 	fadeDuration = 0.5,	    -- seconds during fade out, negative means never
 	border = 1,				-- border width
 	size = 26,				-- button size
 	remainingTime = false,	-- true to display remaining time instead of duration in the seekbar
-	maxVolume = 100,		-- maximum volume allowed by the volume slider
+	maxVolume = 130,		-- maximum volume allowed by the volume slider
 	}
 	
 mp.commandv('set', 'keepaspect', 'yes')
@@ -190,16 +190,19 @@ ne.setMargin = function(self, mr)
 		mp.set_property_native("user-data/osc/margins", mr)
 	end
 ne.responder['resize'] = function(self)
-		if not player.fullscreen then
-			local mr = {
+		local mr = {l = 0, r = 0, t = 0, b = 0}
+		if player.fullscreen then
+			setVisibility('normal')
+		else
+			mr = {
 				l = margins.l / player.geo.width,
 				r = margins.r / player.geo.width,
 				t = margins.t / player.geo.height,
 				b = margins.b / player.geo.height,
 				}
-			self:setMargin(mr)
 			setVisibility('always')
 		end
+		self:setMargin(mr)
 		player.geo.refW1 = player.geo.width - opts.size*4 - opts.border*6
 		player.geo.refW2 = player.geo.width - opts.size*3 - opts.border*5
 		player.geo.refY = player.geo.height - margins.b
@@ -210,14 +213,7 @@ ne.responder['resize'] = function(self)
 		setPlayActiveArea('area3', 0, player.geo.height*0.67, player.geo.width, player.geo.height, 'show_hide')
 		return false
 	end
-ne.responder['fullscreen'] = function(self)
-		if player.fullscreen then
-			local mr = {l = 0, r = 0, t = 0, b = 0}
-			self:setMargin(mr)
-			setVisibility('normal')
-		end
-		return false
-	end
+ne.responder['fullscreen'] = ne.responder['resize']
 ne:init()
 local updater = ne
 addToPlayLayout('updater')
