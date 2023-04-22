@@ -137,44 +137,35 @@ end
 
 -- stand alone version of setPos, setStyle, setAlpha function 
 function getPos(geo)
-    if not geo then return '' end
     return string.format('{\\pos(%f,%f)\\an%d}', geo.x, geo.y, geo.an)
 end
 
 function getAlpha(style, trans)
-    if not style or not trans then return '' end
+    local sta = style.alpha or getElement('default').style.alpha
     local alpha = {0, 0, 0, 0}
-    if style.alpha then
-        for i = 1, 4 do
-            alpha[i] = 255 - (((1-(style.alpha[i]/255)) * (1-trans)) * 255)
-        end
-    else
-        alpha = {trans*255, trans*255, trans*255, trans*255}
+    for i = 1, 4 do
+        alpha[i] = 255 - (255-sta[i])*(1-trans)
     end
-    return string.format('{\\1a&H%x&\\2a&H%x&\\3a&H%x&\\4a&H%x&}', alpha[1], alpha[2], alpha[3], alpha[4])
+    return string.format('{\\1a&H%x&\\2a&H%x&\\3a&H%x&\\4a&H%x&}',
+        alpha[1], alpha[2], alpha[3], alpha[4])
 end
 
 function getStyle(style)
-    if not style then return '' end
-    local fmt = {'{'}
-    if style.color then
-        table.insert(fmt, 
-            string.format('\\1c&H%s&\\2c&H%s&\\3c&H%s&\\4c&H%s&',
-                style.color[1], style.color[2], style.color[3], style.color[4]))
+    local st, std = style, getElement('default')['style']
+    local fmt = {'{', '', '', '', '', '', '', '', '}'}
+    if st.color then
+        fmt[2] = string.format('\\1c&H%s&\\2c&H%s&\\3c&H%s&\\4c&H%s&',
+                st.color[1], st.color[2], st.color[3], st.color[4])
+    else
+        fmt[2] = string.format('\\1c&H%s&\\2c&H%s&\\3c&H%s&\\4c&H%s&',
+                std.color[1], std.color[2], std.color[3], std.color[4])
     end
-    if style.border then
-        table.insert(fmt, string.format('\\bord%.2f', style.border)) end
-    if style.blur then
-        table.insert(fmt, string.format('\\blur%.2f', style.blur)) end
-    if style.shadow then
-        table.insert(fmt, string.format('\\shad%.2f', style.shadow)) end
-    if style.font then
-        table.insert(fmt, string.format('\\fn%s', style.font)) end
-    if style.fontsize then
-        table.insert(fmt, string.format('\\fs%d', style.fontsize)) end
-    if style.wrap then
-        table.insert(fmt, string.format('\\q%d', style.wrap)) end
-    table.insert(fmt, '}')
+    fmt[3] = string.format('\\bord%.2f', st.border or std.border)
+    fmt[4] = string.format('\\blur%.2f', st.blur or std.blur)
+    fmt[5] = string.format('\\shad%.2f', st.shadow or std.shadow)
+    fmt[6] = '\\fn' .. (st.font or std.font)
+    fmt[7] = string.format('\\fs%d', st.fontsize or std.fontsize)
+    fmt[8] = string.format('\\q%d', st.wrap or std.wrap)
     return table.concat(fmt)
 end
 

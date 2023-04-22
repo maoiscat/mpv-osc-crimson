@@ -37,64 +37,42 @@ styles = {
 	tooltip = {
 		color = {'FFFFFF', '0', '0', '0'},
 		border = 1,
-		blur = 0,
-		font = 'mpv-osd-symbols',
 		fontsize = 16,
 		wrap = 2,
 		},
 	border = {
 		color = {'0f0f06', '0', '0', '0'},
-		alpha = {0, 255, 25, 255},
-		blur = 0,
-		border = 0,
+		},
+	invisible = {
+		alpha = {255, 255, 255, 255}
 		},
 	button = {
 		color = {'2e2c2a', '0', '0f0f06', '0'},
-		alpha = {0, 255, 0, 255},
-		blur = 0,
 		border = opts.border,
 		},
 	button2 = {
 		color = {'99', '0', '0f0f06', '0'},
-		alpha = {0, 255, 0, 255},
-		blur = 0,
 		border = opts.border,
 		},
-	button3 = {	-- for sliders, no border
+	button3 = {	-- for slider fg
 		color = {'99', '0', '0f0f06', '0'},
-		alpha = {0, 255, 255, 255},
-		blur = 0,
-		border = opts.border,
 		},
 	icon = {
 		color = {'FFFFFF', '0', '0', '0'},
-		border = 0,
-		blur = 0,
 		font = 'material-design-iconic-font',
 		fontsize = 20,
 		},
 	icon2 = {
 		color = {'a0a0a0', '0', '0', '0'},
-		alpha = {0, 255, 255, 255},
-		border = 0,
-		blur = 0,
 		font = 'material-design-iconic-font',
 		fontsize = 20,
 		},
 	text = {
 		color = {'FFFFFF', '0', '0', '0'},
-		border = 0,
-		blur = 0,
-		font = 'mpv-osd-symbols',
 		fontsize = 14,
-		wrap = 2,
 		},
 	text2 = {
 		color = {'a0a0a0', '0', '0', '0'},
-		alpha = {0, 255, 255, 255},
-		border = 0,
-		blur = 0,
-		font = 'mpv-osd-symbols',
 		fontsize = 14,
 		wrap = 2,
 		},
@@ -112,8 +90,6 @@ msg:init()
 -- an enviromental variable updater
 ne = newElement('updater')
 ne.layer = 1000
-ne.geo = nil
-ne.style = nil
 ne.visible = false
 ne.init = function(self)
 		-- opts backup
@@ -242,23 +218,6 @@ ne.responder['resize'] = ne.render
 ne:init()
 addToIdleLayout('outline')
 addToPlayLayout('outline')
-
-ne = newElement('panel', 'box')
-ne.layer = 2
-ne.style = styles.button
-ne.geo.an = 1
-ne.geo.x = opts.border
-ne.geo.h = opts.size*2 + opts.border
-ne.responder['resize'] = function(self)
-		self.geo.w = player.geo.width - opts.border*2
-		self.geo.y = player.geo.height - opts.border
-		self:setPos()
-		self:render()
-		return false
-	end
-ne:init()
-addToIdleLayout('panel')
-addToPlayLayout('panel')
 
 -- to automatically calculate button position from left border
 -- set button x position considering geo.w and geo.an
@@ -874,10 +833,29 @@ ne:init()
 addToIdleLayout('lblInfo2')
 addToPlayLayout('lblInfo2')
 
+-- add a variable space
+ne = newElement('space', 'box')
+ne.layer = 9
+ne.style = styles.button
+ne.geo.an = 4
+ne.geo.h = opts.size
+ne.geo.p = opts.border*4 + opts.size*3
+ne.responder['resize'] = function(self)
+		self.geo.x = btnInfo.geo.x + btnInfo.geo.w + opts.border
+		self.geo.w = player.geo.width - self.geo.x - self.geo.p
+		self.geo.y = player.geo.refY2
+		self:setPos()
+		self:render()
+		return false
+	end
+ne:init()
+addToIdleLayout('space')
+addToPlayLayout('space')
+
 -- window control button bg
 ne = newElement('wcbg', 'box')
 ne.layer = 19
-ne.style = styles.border
+ne.style = styles.invisible
 ne.geo.w = opts.border*4+opts.size*3
 ne.geo.h = opts.size
 ne.geo.an = 6
@@ -886,10 +864,11 @@ ne.setHitBox = function(self)
 		self.hitBox = {x1 = x1, y1 = y1, x2 = x2, y2 = y2}
 	end
 ne.isInside = isInside
+ne.setAlpha = function(self, trans)
+	end
 ne.responder['resize'] = function(self)
 		self.geo.y = player.geo.refY2
 		self.geo.x = player.geo.width
-		self:setPos()
 		self:setHitBox()
 		return false
 	end
@@ -900,7 +879,6 @@ ne.responder['mouse_move'] = function(self, pos)
 		end
 		return false
 	end
-ne:init()
 addToIdleLayout('wcbg')
 addToPlayLayout('wcbg')
 
@@ -1259,36 +1237,6 @@ ne.responder['file-loaded'] = function(self)
 ne:init()
 addToIdleLayout('title')
 addToPlayLayout('title')
-
--- volume control background
-ne = newElement('vlbg', 'box')
-ne.layer = 19
-ne.style = styles.border
-ne.geo.w = opts.border*5+opts.size*4
-ne.geo.h = opts.size
-ne.geo.an = 6
-ne.setHitBox = function(self)
-		local x1, y1, x2, y2 = getBoxPos(self.geo)
-		self.hitBox = {x1 = x1, y1 = y1, x2 = x2, y2 = y2}
-	end
-ne.isInside = isInside
-ne.responder['resize'] = function(self)
-		self.geo.y = player.geo.refY1
-		self.geo.x = player.geo.width
-		self:setPos()
-		self:setHitBox()
-		return false
-	end
-ne.responder['mouse_move'] = function(self, pos)
-		-- to inhibit normal buttons
-		if self:isInside(pos) then
-			return true
-		end
-		return false
-	end
-ne:init()
---addToIdleLayout('vlbg')
---addToPlayLayout('vlbg')
 
 -- Volume button
 ne = newElement('btnVol', 'button')
