@@ -1,4 +1,4 @@
--- mpv-osc-crimson
+-- mpv-osc-simple
 -- by maoiscat
 -- github/maoiscat/mpv-osc-crimson
 
@@ -10,14 +10,14 @@ mp.commandv('set', 'osc', 'no')
 
 -- user options
 opts = {
-	scale = 1,              -- osc render scale
+	scale = 1.8,              -- osc render scale
 	fixedHeight = false,	-- true to allow osc scale with window
 	hideTimeout = 1,		-- seconds untile osc hides, negative means never
 	fadeDuration = 0.5,	    -- seconds during fade out, negative means never
 	border = 1,				-- border width
 	size = 26,				-- button size
 	remainingTime = false,	-- true to display remaining time instead of duration in the seekbar
-	maxVolume = 100,		-- maximum volume allowed by the volume slider
+	maxVolume = 130,		-- maximum volume allowed by the volume slider
 	}
 	
 mp.commandv('set', 'keepaspect', 'yes')
@@ -848,6 +848,8 @@ ne.responder['resize'] = function(self)
 		self:render()
 		return false
 	end
+ne.responder['audio-changed'] = ne.responder['resize']
+ne.responder['video-changed'] = ne.responder['resize']
 ne:init()
 addToIdleLayout('space')
 addToPlayLayout('space')
@@ -1233,6 +1235,7 @@ ne.responder['resize'] = function(self)
 ne.responder['file-loaded'] = function(self)
 		self.title = mp.get_property('media-title')
 		self.chars = 0
+		self.responder['resize'](self)
 	end
 ne:init()
 addToIdleLayout('title')
