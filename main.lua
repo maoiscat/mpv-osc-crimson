@@ -10,7 +10,7 @@ mp.commandv('set', 'osc', 'no')
 
 -- user options
 opts = {
-	scale = 1.8,              -- osc render scale
+	scale = 1,              -- osc render scale
 	fixedHeight = false,	-- true to allow osc scale with window
 	hideTimeout = 1,		-- seconds untile osc hides, negative means never
 	fadeDuration = 0.5,	    -- seconds during fade out, negative means never
