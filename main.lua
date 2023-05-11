@@ -95,8 +95,9 @@ ne.init = function(self)
 		-- opts backup
 		player.userScale = opts.scale
 		-- event generators
-		mp.register_event('file-loaded',
-			function()
+		mp.observe_property('track-list/count', 'native', 
+			function(name, val)
+				if val==0 then return end
 				player.tracks = getTrackList()
 				player.playlist = getPlaylist()
 				player.chapters = getChapterList()
